@@ -1,6 +1,6 @@
 [package]
 name = "mri-sys"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Dylan McKay <dylanmckay34@gmail.com>"]
 
 description = "Rust bindings to Mat'z Ruby interpreter"
@@ -9,6 +9,8 @@ readme = "README.md"
 keywords = ["ruby", "matz", "interpreter", "plugin"]
 
 license = "MIT"
+
+build = "build.rs"
 
 [dependencies]
 libc = ">= 0.2.11"
