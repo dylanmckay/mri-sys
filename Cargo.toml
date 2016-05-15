@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Dylan McKay <dylan.mckay@powershop.co.nz>"]
 
 [dependencies]
+libc = "*"

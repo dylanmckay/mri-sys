@@ -1,6 +1,36 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
+pub use self::consts::*;
+pub use self::value::*;
+pub use self::functions::*;
+pub use self::statics::*;
+pub use self::vt::*;
+pub use self::ty::*;
+
+pub mod value;
+pub mod vt;
+#[allow(non_upper_case_globals)]
+pub mod consts;
+pub mod statics;
+pub mod functions;
+#[allow(non_snake_case)]
+pub mod ty;
+
+extern crate libc;
+
+#[repr(C)]
+#[derive(Copy,Clone,Debug,PartialEq,Eq)]
+pub struct ID(libc::uintptr_t);
+
+#[repr(C)]
+pub struct RBasic {
+    flags: VALUE,
+    klass: VALUE,
+}
+
+impl RBasic {
+    // Value is actually a pointer to an RBasic structure.
+    pub unsafe fn from_pointer(v: VALUE) -> *const Self {
+        let ptr: *const RBasic = std::mem::transmute(v);
+        ptr
     }
 }
+
