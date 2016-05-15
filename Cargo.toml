@@ -11,4 +11,4 @@ keywords = ["ruby", "matz", "interpreter", "plugin"]
 license = "MIT"
 
 [dependencies]
-libc = "*"
+libc = ">= 0.2.11"
