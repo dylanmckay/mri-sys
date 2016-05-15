@@ -3,5 +3,12 @@ name = "mri-sys"
 version = "0.1.0"
 authors = ["Dylan McKay <dylanmckay34@gmail.com>"]
 
+description = "Rust bindings to Mat'z Ruby interpreter"
+repository = "https://github.com/dylanmckay/mri-sys"
+readme = "README.md"
+keywords = ["ruby", "matz", "interpreter", "plugin"]
+
+license = "MIT"
+
 [dependencies]
 libc = "*"
