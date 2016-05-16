@@ -13,6 +13,8 @@ pub mod statics;
 pub mod functions;
 #[allow(non_snake_case)]
 pub mod ty;
+#[cfg(test)]
+pub mod test;
 
 extern crate libc;
 
