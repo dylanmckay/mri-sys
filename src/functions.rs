@@ -1,28 +1,32 @@
 use libc;
 use super::*;
 
-/// A function with vardic arguments.
-///
-/// Rust has the restriction that any vardic function must have at
-/// least one named argument.
-pub type VarargsFn<R> = extern fn(_: u32, ...) -> R;
-
 extern "C" {
     pub fn ruby_init();
     pub fn ruby_setup() -> libc::c_int;
     pub fn ruby_cleanup(_: libc::c_int);
 
-    pub fn rb_eval_string_protect(_: *const libc::c_char, _: *const libc::c_int) -> VALUE;
+    pub fn rb_eval_string(_: *const libc::c_char) -> VALUE;
+    pub fn rb_eval_string_protect(_: *const libc::c_char, _: *mut libc::c_int) -> VALUE;
+    pub fn rb_eval_string_wrap(_: *const libc::c_char, _: *mut libc::c_int) -> VALUE;
 
     pub fn rb_errinfo() -> VALUE;
     pub fn rb_set_errinfo(_: VALUE);
 
     pub fn rb_intern(_: *const libc::c_char) -> ID;
-
-    pub fn rb_id2sym(_: ID) -> VALUE;
+    pub fn rb_intern2(_: *const libc::c_char, _: libc::c_long) -> ID;
+    pub fn rb_intern_str(s: VALUE) -> ID;
+    pub fn rb_id2name(_: ID) -> *const libc::c_char;
+    pub fn rb_check_id(_: *mut VALUE) -> ID;
+    pub fn rb_to_id(_: VALUE) -> ID;
     pub fn rb_id2str(_: ID) -> VALUE;
+    pub fn rb_sym2str(_: VALUE) -> VALUE;
+    pub fn rb_to_symbol(name: VALUE) -> VALUE;
+    pub fn rb_check_symbol(namep: *mut VALUE) -> VALUE;
+    pub fn rb_id2sym(_: ID) -> VALUE;
 
-    pub fn rb_to_symbol(_: VALUE) -> VALUE;
+    pub fn rb_class2name(_: VALUE) -> *const libc::c_char;
+    pub fn rb_obj_classname(_: VALUE) -> *const libc::c_char;
 
     pub fn rb_funcall(_: VALUE, _: ID, _: libc::c_int, ...) -> VALUE;
     pub fn rb_funcallv(_: VALUE, _: ID, _: libc::c_int, _: *const VALUE) -> VALUE;
@@ -36,26 +40,29 @@ extern "C" {
     pub fn rb_define_class_under(_: VALUE, _: *const libc::c_char, _: VALUE) -> VALUE;
     pub fn rb_define_module_under(_: VALUE, _: *const libc::c_char) -> VALUE;
 
-    pub fn rb_include_module(_: VALUE, _: VALUE) -> VALUE;
+    pub fn rb_bnclude_module(_: VALUE, _: VALUE) -> VALUE;
     pub fn rb_extend_object(_: VALUE, _: VALUE) -> VALUE;
     pub fn rb_prepend_module(_: VALUE, _: VALUE) -> VALUE;
 
     pub fn rb_define_variable(_: *const libc::c_char, _: *const VALUE) -> VALUE;
+    pub fn rb_define_virtual_variable(_: *const libc::c_char, _: *mut extern fn() -> VALUE, _: *mut extern fn());
+    pub fn rb_define_hooked_variable(_: *const libc::c_char, _: *mut VALUE, _: *mut extern fn() -> VALUE, _: *mut extern fn());
     pub fn rb_define_readonly_variable(_: *const libc::c_char, _: *const VALUE) -> VALUE;
     pub fn rb_define_const(_: VALUE, _: *const libc::c_char, _: VALUE) -> VALUE;
+    pub fn rb_define_global_const(_: *const libc::c_char, _: VALUE);
 
-    pub fn rb_define_method(_: VALUE, _: *const libc::c_char, _: *const VarargsFn<VALUE>, _: libc::c_int) -> VALUE;
-    pub fn rb_define_module_function(_: VALUE, _: *const libc::c_char, _: VarargsFn<VALUE> , _: libc::c_int) -> VALUE;
-    pub fn rb_define_global_function(_: *const libc::c_char, _: VarargsFn<VALUE>, _: libc::c_int) -> VALUE;
+    pub fn rb_define_method(_: VALUE, _: *const libc::c_char, _: *mut extern fn() -> VALUE, _: libc::c_int) -> VALUE;
+    pub fn rb_define_module_function(_: VALUE, _: *const libc::c_char, _: *mut extern fn() -> VALUE, _: libc::c_int) -> VALUE;
+    pub fn rb_define_global_function(_: *const libc::c_char, _: *mut extern fn() -> VALUE, _: libc::c_int) -> VALUE;
 
     pub fn rb_undef_method(_: VALUE, _: *const libc::c_char) -> VALUE;
     pub fn rb_define_alias(_: VALUE, _: *const libc::c_char, _: *const libc::c_char) -> VALUE;
     pub fn rb_define_attr(_: VALUE, _: *const libc::c_char, _: libc::c_int, _: libc::c_int) -> VALUE;
 
-    pub fn rb_global_variable(_: *mut VALUE) -> VALUE;
-    pub fn rb_gc_register_mark_object(_: *mut VALUE) -> VALUE;
-    pub fn rb_gc_register_address(_: *mut VALUE) -> VALUE;
-    pub fn rb_gc_unregister_address(_: *mut VALUE) -> VALUE;
+    pub fn rb_global_variable(_: *mut VALUE);
+    pub fn rb_gc_register_mark_object(_: *mut VALUE);
+    pub fn rb_gc_register_address(_: *mut VALUE);
+    pub fn rb_gc_unregister_address(_: *mut VALUE);
 
     pub fn rb_scan_args(_: libc::c_int, _: *const VALUE, _: *const libc::c_char, ...) -> libc::c_int;
     pub fn rb_call_super(_: libc::c_int, _: *const VALUE) -> VALUE;
@@ -69,6 +76,8 @@ extern "C" {
     pub fn rb_iv_set(_: VALUE, _: *const libc::c_char, _: VALUE) -> VALUE;
 
     pub fn rb_equal(_: VALUE, _: VALUE) -> VALUE;
+    pub fn rb_ruby_verbose_ptr() -> *mut VALUE;
+    pub fn rb_ruby_debug_ptr() -> *mut VALUE;
 
     pub fn rb_raise(_: VALUE, _: *const libc::c_char, ...) -> !;
     pub fn rb_fatal(_: *const libc::c_char, ...) -> !;
@@ -105,14 +114,18 @@ extern "C" {
     pub fn rb_yield_block(_: VALUE, _: VALUE, _: libc::c_int, _: *const VALUE, _: VALUE) -> VALUE;
     pub fn rb_block_given_pvoid() -> libc::c_int;
     pub fn rb_need_block();
-    pub fn rb_iterate(_: *const extern fn(VALUE) -> VALUE, _: VALUE, _: *const extern fn(VALUE) -> VALUE, _: VALUE) -> VALUE;
-    // pub fn rb_rescue(VALUE(*)(ANYARGS),VALUE,VALUE(*)(ANYARGS),VALUE) -> VALUE;
-    // pub fn rb_rescue2(VALUE(*)(ANYARGS),VALUE,VALUE(*)(ANYARGS),VALUE,...) -> VALUE;
-    // pub fn rb_ensure(VALUE(*)(ANYARGS),VALUE,VALUE(*)(ANYARGS),VALUE) -> VALUE;
-    // pub fn rb_catch(const char*,VALUE(*)(ANYARGS),VALUE) -> VALUE;
-    // pub fn rb_catch_obj(VALUE,VALUE(*)(ANYARGS),VALUE) -> VALUE;
+    pub fn rb_iterate(_: *mut extern fn(VALUE) -> VALUE, _: VALUE, _: *mut extern fn() -> VALUE, _: VALUE) -> VALUE;
+    pub fn rb_rescue(_: *mut extern fn() -> VALUE, _: VALUE, _: *mut extern fn() -> VALUE, _: VALUE) -> VALUE;
+
+    pub fn rb_rescue2(_: *mut extern fn() -> VALUE, _: VALUE, _: *mut extern fn() -> VALUE, _: VALUE, ...) -> VALUE;
+    pub fn rb_ensure(_: *mut extern fn() -> VALUE, _: VALUE, _: *mut extern fn() -> VALUE, _: VALUE) -> VALUE;
+    pub fn rb_catch(_: *const libc::c_char, _: *mut extern fn() -> VALUE, _: VALUE) -> VALUE;
+    pub fn rb_catch_obj(_: VALUE, _: *mut extern fn() -> VALUE, _: VALUE) -> VALUE;
+
     pub fn rb_throw(_: *const libc::c_char, _: VALUE) -> !;
     pub fn rb_throw_obj(_: VALUE, _: VALUE) -> !;
+
+    pub fn rb_p(_: VALUE);
 
     pub fn rb_require(_: *const libc::c_char) -> VALUE;
 
