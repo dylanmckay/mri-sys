@@ -169,6 +169,7 @@ extern "C" {
     pub fn rb_set_safe_level(_: libc::c_int);
     pub fn rb_set_safe_level_force(_: libc::c_int);
 
+    pub fn rb_num2dbl(_: VALUE) -> libc::c_double;
     pub fn rb_num2long(_: VALUE) -> libc::c_long;
     pub fn rb_num2ulong(_: VALUE) -> libc::c_ulong;
 
@@ -187,3 +188,4 @@ extern "C" {
     pub fn rb_float_new(_: libc::c_double) -> VALUE;
     pub fn rb_float_new_in_heap(_: libc::c_double) -> VALUE;
 }
+
