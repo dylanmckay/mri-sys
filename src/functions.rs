@@ -40,7 +40,7 @@ extern "C" {
     pub fn rb_define_class_under(_: VALUE, _: *const libc::c_char, _: VALUE) -> VALUE;
     pub fn rb_define_module_under(_: VALUE, _: *const libc::c_char) -> VALUE;
 
-    pub fn rb_bnclude_module(_: VALUE, _: VALUE) -> VALUE;
+    pub fn rb_include_module(_: VALUE, _: VALUE) -> VALUE;
     pub fn rb_extend_object(_: VALUE, _: VALUE) -> VALUE;
     pub fn rb_prepend_module(_: VALUE, _: VALUE) -> VALUE;
 
