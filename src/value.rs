@@ -1,9 +1,14 @@
 use libc;
 use std;
 
+/// The inner integer of a `VALUE`.
+#[allow(non_camel_case_types)]
+pub type INNER_VALUE = libc::uintptr_t;
+
 #[repr(C)]
 #[derive(Copy,Clone,PartialEq,Eq)]
-pub struct VALUE(pub libc::uintptr_t);
+/// A Ruby value.
+pub struct VALUE(pub INNER_VALUE);
 
 impl std::fmt::Debug for VALUE {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {

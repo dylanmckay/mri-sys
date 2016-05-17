@@ -189,3 +189,8 @@ extern "C" {
     pub fn rb_float_new_in_heap(_: libc::c_double) -> VALUE;
 }
 
+#[allow(non_snake_case)]
+pub fn INT2FIX(i: libc::c_int) -> VALUE {
+    VALUE(((i<<1) as INNER_VALUE) | (FIXNUM_FLAG.0 as INNER_VALUE))
+}
+
