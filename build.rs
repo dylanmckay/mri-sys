@@ -16,6 +16,7 @@ fn main() {
     println!("cargo:rustc-link-lib=dylib={}", ruby_lib_name);
 
     if LINK_CRYPT { println!("cargo:rustc-link-lib=dylib=crypt"); }
+    println!("cargo:rustc-link-lib=dylib=gmp");
 
     if mem::size_of::<libc::uintptr_t>() >= mem::size_of::<f64>() {
         println!("cargo:rustc-cfg=mri_use_flonum");
