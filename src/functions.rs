@@ -1,6 +1,8 @@
 use libc;
 use super::*;
 
+#[link(name = "gmp")]
+#[cfg_attr(target_os = "macos", link(name = "CoreFoundation", kind = "framework"))]
 extern "C" {
     pub fn ruby_init();
     pub fn ruby_setup() -> libc::c_int;
