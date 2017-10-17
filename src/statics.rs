@@ -15,7 +15,6 @@ extern "C" {
     pub static rb_cBasicObject: VALUE;
     pub static rb_cObject: VALUE;
     pub static rb_cArray: VALUE;
-    pub static rb_cBignum: VALUE;
     pub static rb_cBinding: VALUE;
     pub static rb_cClass: VALUE;
     pub static rb_cCont: VALUE;
@@ -25,7 +24,6 @@ extern "C" {
     pub static rb_cEncoding: VALUE;
     pub static rb_cEnumerator: VALUE;
     pub static rb_cFile: VALUE;
-    pub static rb_cFixnum: VALUE;
     pub static rb_cFloat: VALUE;
     pub static rb_cHash: VALUE;
     pub static rb_cInteger: VALUE;

@@ -7,7 +7,7 @@ use libc;
 /// This is a port of it.
 pub unsafe fn rb_class_of(obj: VALUE) -> VALUE {
     if IMMEDIATE_P(obj) {
-        if FIXNUM_P(obj) { return rb_cFixnum; }
+        if FIXNUM_P(obj) { return rb_cInteger; }
         if FLONUM_P(obj) { return rb_cFloat; }
         if obj == Qtrue { return rb_cTrueClass; }
         if STATIC_SYM_P(obj) { return rb_cSymbol; }

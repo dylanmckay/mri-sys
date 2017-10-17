@@ -27,9 +27,9 @@ pub fn vm_can_eval_stuff() {
         assert_eq!(eval("nil"), (0, Qnil));
         assert!(TYPE_P(eval("1").1, T_FIXNUM));
         assert!(TYPE_P(eval("1.0").1, T_FLOAT));
-        assert_eq!(eval("Fixnum").1, rb_cFixnum);
-        assert_eq!(eval("Fixnum.class").1, rb_cClass);
-        assert_eq!(eval("Fixnum.class.class").1, rb_cClass);
+        assert_eq!(eval("Integer").1, rb_cInteger);
+        assert_eq!(eval("Integer.class").1, rb_cClass);
+        assert_eq!(eval("Integer.class.class").1, rb_cClass);
         assert!(TYPE_P(eval("false || true").1, T_TRUE));
         assert!(TYPE_P(eval("true || false").1, T_TRUE));
         assert!(TYPE_P(eval("false || 5").1, T_FIXNUM));
