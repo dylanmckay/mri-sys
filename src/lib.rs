@@ -5,16 +5,14 @@ pub use self::statics::*;
 pub use self::vt::*;
 pub use self::ty::*;
 
-pub mod value;
-pub mod vt;
-#[allow(non_upper_case_globals)]
-pub mod consts;
-pub mod statics;
-pub mod functions;
-#[allow(non_snake_case)]
-pub mod ty;
+mod value;
+mod vt;
+mod consts;
+mod statics;
+mod functions;
+mod ty;
 #[cfg(test)]
-pub mod test;
+mod test;
 
 extern crate libc;
 
