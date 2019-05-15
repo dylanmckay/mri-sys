@@ -1,6 +1,6 @@
 [package]
 name = "mri-sys"
-version = "0.2.1"
+version = "0.2.4"
 authors = ["Dylan McKay <me@dylanmckay.io>"]
 
 description = "Rust bindings to Mat'z Ruby interpreter"
