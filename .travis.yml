@@ -15,5 +15,5 @@ addons:
     packages:
       - ruby-full
 env:
-  - RUBY_LIB=ruby-1.9.1-static
+  - RUBY_LIB=ruby-1.9.1-static RUBY_VERSION=1.9.1
 

@@ -41,8 +41,7 @@ fn should_use_flonum() -> bool {
         panic!("error: ruby requires sizeof(void*) == sizeof(long) or sizeof(LONG_LONG) to be compiled");
     };
 
-    ruby_version_supports_flonum() &&
-        sizeof_value >= SIZEOF_DOUBLE
+    ruby_version_supports_flonum() && sizeof_value >= SIZEOF_DOUBLE
 }
 
 fn ruby_version_supports_flonum() -> bool {
@@ -53,6 +52,11 @@ fn ruby_version_supports_flonum() -> bool {
 }
 
 fn current_ruby_version() -> Option<RubyVersion>  {
+    // Allow the user to explicitly specify the Ruby version.
+    if let Some(version_str) = std::env::var("RUBY_VERSION").ok() {
+        return Some(version_str.parse().unwrap());
+    }
+
     let output = Command::new("ruby")
         .args(&["--version"])
         .output()
@@ -64,12 +68,8 @@ fn current_ruby_version() -> Option<RubyVersion>  {
 
         assert_eq!(Some("ruby"), version_line_parts.next(), "expected version string to start with 'ruby'");
         let version_str = version_line_parts.next().expect("expected ruby --version to contain a version");
-        let mut version_parts = version_str.split(".");
 
-        let major_version = version_parts.next().unwrap().parse().expect("expected Ruby major version to be an integer");
-        let minor_version = version_parts.next().unwrap().parse().expect("expected Ruby minor version to be an integer");
-
-        RubyVersion(major_version, minor_version)
+        version_str.parse().expect("failed to parse Ruby version")
     })
 }
 
@@ -84,6 +84,19 @@ impl std::cmp::PartialOrd for RubyVersion {
 
             self.1.partial_cmp(&rhs.1)
         }
+    }
+}
+
+impl std::str::FromStr for RubyVersion {
+    type Err = String;
+
+    fn from_str(version_str: &str) -> Result<Self, String> {
+        let mut version_parts = version_str.split(".");
+
+        let major_version = version_parts.next().unwrap().parse().map_err(|_| "expected Ruby major version to be an integer")?;
+        let minor_version = version_parts.next().unwrap().parse().map_err(|_| "expected Ruby minor version to be an integer")?;
+
+        Ok(RubyVersion(major_version, minor_version))
     }
 }
 
