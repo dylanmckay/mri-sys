@@ -5,6 +5,7 @@ authors = ["Dylan McKay <me@dylanmckay.io>"]
 
 description = "Rust bindings to Mat'z Ruby interpreter"
 repository = "https://github.com/dylanmckay/mri-sys"
+documentation = "https://docs.rs/mri-sys"
 readme = "README.md"
 keywords = ["ruby", "matz", "interpreter", "plugin"]
 
@@ -13,7 +14,7 @@ license = "MIT"
 build = "build.rs"
 
 [dependencies]
-libc = ">= 0.2.11"
+libc = ">= 0.2.86"
 
 [build-dependencies]
-libc = ">= 0.2.11"
+libc = ">= 0.2.86"
