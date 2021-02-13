@@ -7,3 +7,8 @@
 
 Rust bindings to Mat'z Ruby interpreter.
 
+Check out [`examples/repl.rs`](./examples/repl.rs) for an example.
+
+Links:
+
+  * https://silverhammermba.github.io/emberb/c/
