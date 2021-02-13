@@ -2,6 +2,7 @@
 name = "mri-sys"
 version = "0.2.4"
 authors = ["Dylan McKay <me@dylanmckay.io>"]
+edition = "2018"
 
 description = "Rust bindings to Mat'z Ruby interpreter"
 repository = "https://github.com/dylanmckay/mri-sys"
