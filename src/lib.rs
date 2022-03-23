@@ -13,6 +13,7 @@ mod functions;
 mod ty;
 #[cfg(test)]
 mod test;
+#[cfg(feature = "helpers")] pub mod helpers;
 
 extern crate libc;
 

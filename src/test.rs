@@ -1,19 +1,8 @@
 use super::*;
-use std::ffi::CString;
-use libc;
+use crate::helpers::*;
 
-pub fn c_str(s: &str) -> CString {
-    CString::new(s).unwrap()
-}
-
-pub fn eval(s: &str) -> (libc::c_int, VALUE) {
-    let mut state: libc::c_int = 0;
-
-    let result = unsafe {
-        rb_eval_string_protect(c_str(s).as_ptr(), &mut state)
-    };
-
-    (state, result)
+pub fn eval(s: &str) -> Result<Value, CaughtException> {
+    crate::helpers::eval(s, Binding::top_level(), None)
 }
 
 #[test]
@@ -21,19 +10,20 @@ pub fn vm_can_eval_stuff() {
     unsafe {
         ruby_init();
 
-        let number_ten = eval("10").1;
-        let five_plus_five = eval("5+5").1;
+        assert_eq!(eval("nil"), Ok(Value::NIL));
 
-        assert_eq!(eval("nil"), (0, Qnil));
-        assert!(TYPE_P(eval("1").1, T_FIXNUM));
-        assert!(TYPE_P(eval("1.0").1, T_FLOAT));
-        assert_eq!(eval("Integer").1, rb_cInteger);
-        assert_eq!(eval("Integer.class").1, rb_cClass);
-        assert_eq!(eval("Integer.class.class").1, rb_cClass);
-        assert!(TYPE_P(eval("false || true").1, T_TRUE));
-        assert!(TYPE_P(eval("true || false").1, T_TRUE));
-        assert!(TYPE_P(eval("false || 5").1, T_FIXNUM));
+        let number_ten = eval("10").unwrap();
+        let five_plus_five = eval("5+5").unwrap();
 
+        assert!(eval("nil").unwrap().is_nil());
+        assert!(eval("1").unwrap().is_of_value_type(T_FIXNUM));
+        assert!(five_plus_five.is_of_value_type(T_FIXNUM));
+        assert!(eval("1.0").unwrap().is_of_value_type(T_FLOAT));
+        assert_eq!(eval("true || false").unwrap(), Value::TRUE);
+        assert_eq!(eval("true && false").unwrap(), Value::FALSE);
+
+        assert_eq!(number_ten.to_s().unwrap(), "10".to_owned());
+        assert_eq!(five_plus_five.to_s().unwrap(), "10".to_owned());
         assert_eq!(number_ten, five_plus_five);
 
         ruby_cleanup(0);

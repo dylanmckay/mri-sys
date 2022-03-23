@@ -11,12 +11,24 @@ extern "C" {
     pub fn rb_eval_string(_: *const libc::c_char) -> VALUE;
     pub fn rb_eval_string_protect(_: *const libc::c_char, _: *mut libc::c_int) -> VALUE;
     pub fn rb_eval_string_wrap(_: *const libc::c_char, _: *mut libc::c_int) -> VALUE;
+    /// Note: argv format is as follows: `eval(string [, binding [, filename [,lineno]]])`
+    // pub fn rb_f_eval(argc: libc::c_int, argv: *const VALUE, receiver: VALUE) -> VALUE;
 
     pub fn rb_errinfo() -> VALUE;
     pub fn rb_set_errinfo(_: VALUE);
 
+
+    /// Protects a  function call from  potential global escapes from  the function.
+    /// Such global escapes include exceptions, `throw`, `break`, for example.
+    ///
+    /// Calls your C function with the value specified in `args`. If the C function does not
+    /// escape, sets `state` to `0`.
+    pub fn rb_protect(f: extern "C" fn(VALUE) -> VALUE, args: VALUE, state: *mut libc::c_int) -> VALUE;
+
+    /// Convert a C string to a symbol (adding to the symbol table).
     pub fn rb_intern(_: *const libc::c_char) -> ID;
     pub fn rb_intern2(_: *const libc::c_char, _: libc::c_long) -> ID;
+    /// Convert a Ruby `String` to a symbol (adding to the symbol table).
     pub fn rb_intern_str(s: VALUE) -> ID;
     pub fn rb_id2name(_: ID) -> *const libc::c_char;
     pub fn rb_check_id(_: *mut VALUE) -> ID;
@@ -30,12 +42,24 @@ extern "C" {
     pub fn rb_class2name(_: VALUE) -> *const libc::c_char;
     pub fn rb_obj_classname(_: VALUE) -> *const libc::c_char;
 
-    pub fn rb_funcall(_: VALUE, _: ID, _: libc::c_int, ...) -> VALUE;
+    /// Call a Ruby function using varargs to pass the arguments.
+    pub fn rb_funcall(receiver: VALUE, name: ID, argc: libc::c_int, ...) -> VALUE;
+    /// Call a Ruby function using C arrays to pass the arguments.
     pub fn rb_funcallv(_: VALUE, _: ID, _: libc::c_int, _: *const VALUE) -> VALUE;
+    /// Call a public Ruby function using C arrays to pass the arguments.
     pub fn rb_funcallv_public(_: VALUE, _: ID, _: libc::c_int, _: *const VALUE) -> VALUE;
     pub fn rb_funcall_passing_block(_: VALUE, _: ID, _: libc::c_int, _: *const VALUE) -> VALUE;
     pub fn rb_funcall_with_block(_: VALUE, _: ID, _: libc::c_int, _: *const VALUE, _: VALUE) -> VALUE;
+
+    /// Gets the value of a constant.
+    pub fn rb_const_get(space: VALUE, name: ID) -> VALUE;
+    /// Sets the value of a constant.
+    pub fn rb_const_set(space: VALUE, name: ID, value: VALUE);
+
+    /// Convert Ruby `String` to a C string.
     pub fn rb_string_value_cstr(_: *const VALUE) -> *const libc::c_char;
+    /// Convert C string to a Ruby `String`.
+    pub fn rb_str_new_cstr(ptr: *const libc::c_char) -> VALUE;
 
     pub fn rb_define_class(_: *const libc::c_char, _: VALUE) -> VALUE;
     pub fn rb_define_module(_: *const libc::c_char) -> VALUE;
